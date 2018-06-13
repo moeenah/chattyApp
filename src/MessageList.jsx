@@ -1,14 +1,20 @@
 import React, {Component} from 'react';
 
-import App from "./App.jsx";
+import Message from "./Message.jsx";
 
 class MessageList extends Component {
   render() {
+    //iterates over messages array
+     const Messages = this.props.messages.map(message => (
+      <Message key={message.id} username={message.username} content={message.content} />
+    ));
     return (
-          <div className="message">
-            <span className="message-username">{this.props.message.username}</span>
-            <span className="message-content">{this.props.message.content}</span>
-          </div>
+      <main className="messages">
+        {Messages}
+        {/*<div className="message system">
+          Anonymous1 changed their name to nomnom.
+        </div>*/}
+      </main>
     );
   }
 }

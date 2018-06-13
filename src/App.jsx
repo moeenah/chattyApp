@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import NavBar from "./NavBar.jsx";
-import Message from "./Message.jsx";
 import ChatBar from "./ChatBar.jsx";
 import MessageList from "./MessageList.jsx";
 
@@ -62,15 +61,12 @@ class App extends Component {
   }
 
   render() {
-    //iterates over messages array
-     const bobMessages = this.state.messages.map(message => (
-      <MessageList key={message.id} message={message} />
-    ));
+
     //sends default user name to ChatBar
     return (
       <div>
         <NavBar />
-        <Message messages={bobMessages} />
+        <MessageList messages={this.state.messages} />
         <ChatBar addMessage={this.addMessage.bind(this)} defaultValue={this.state.currentUser.name} />
       </div>
     );
