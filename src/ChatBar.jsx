@@ -1,29 +1,7 @@
 import React, {Component} from 'react';
 
 class ChatBar extends Component {
-  // onKeyDown(event){
-  //   if(event.key === 'Enter'){
-
-  //     if (this.content.value === '') {
-  //       //alerts user if no message  is entered after hitting enter
-  //       alert('Please enter a message');
-  //     } else if (this.username.value === '') {
-  //       //creates obj with username and content and passes it to add message
-  //       let messageObj = {};
-  //       messageObj.username = 'Anonymous';
-  //       messageObj.content = this.content.value;
-  //       this.props.addMessage(messageObj);
-  //     } else {
-  //       //creates obj with username and content and passes it to add message
-  //       let messageObj = {};
-  //       messageObj.username = this.username.value;
-  //       messageObj.content = this.content.value;
-  //       this.props.addMessage(messageObj);
-  //     }
-  //     this.content.value = "";
-  //   }
-  // }
-
+  //gets new message entered
   newMessage(event) {
     if(event.key === 'Enter'){
 
@@ -48,18 +26,15 @@ class ChatBar extends Component {
       this.content.value = "";
     }
   }
-
+  //gets new username entered
   newUser(event) {
     if(event.key === 'Enter'){
       let messageObj = {};
       messageObj.type = 'postNotification';
       messageObj.username = this.username.value;
-      //messageObj.content = this.content.value;
       this.props.newUser(messageObj);
-
     }
   }
-
   render() {
     return (
       <footer className="chatbar" >

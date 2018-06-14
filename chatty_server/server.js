@@ -1,10 +1,7 @@
-// server.js
-
-const express = require('express');
-const WebSocket = require('ws');
-
-const uuidv4 = require('uuid/v4');
-
+const express     = require('express');
+const WebSocket   = require('ws');
+const uuidv4      = require('uuid/v4');
+const randomColour = require('randomcolor');
 // Set the port to 3001
 const PORT = 3001;
 
@@ -17,49 +14,48 @@ const server = express()
 // Create the WebSockets server
 const wss = new WebSocket.Server({ server });
 
-// Set up a callback that will run when a client connects to the server
-// When a client connects they are assigned a socket, represented by
-// the ws parameter in the callback.
-
-
 
 wss.on('connection', (ws) => {
   console.log('Client connected');
-  // console.log(wss.clients);
+  //gets number of clients connected
   let clientNum = wss.clients.size;
    // Broadcast to all.
   wss.clients.forEach(function each(client) {
+    let userColour = randomColour();
     if (client.readyState === WebSocket.OPEN) {
-      //console.log(clientNum);
+      //sends updated user count to client
       let userNumObj = {};
-      //userNumObj.id = uuidv4();
+      userNumObj.colour = userColour;
       userNumObj.numOfClients = clientNum;
       client.send(JSON.stringify(userNumObj));
     }
   });
 
   ws.on('message', function incoming(data) {
-    let dataObj = JSON.parse(data);
-    //console.log(dataObj);
-    let finalObj;
-    if (dataObj.type === "postNotification") {
-      newUserObj = JSON.parse(data);
-      newUserObj.type = "incomingNotification";
-      newUserObj.id = uuidv4();
-      finalObj = newUserObj;
-      console.log(newUserObj);
-    } else if (dataObj.type === "postMessage") {
-      addTextObj = JSON.parse(data);
-      addTextObj.type = "incomingMessage";
-      addTextObj.id = uuidv4();
-      finalObj = addTextObj;
-      console.log(addTextObj);
-    }
-
-
+    //sends message to corresponding user
     wss.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(finalObj));
+        let dataObj = JSON.parse(data);
+        console.log(dataObj);
+        //sends notification to client
+        if (dataObj.type === "postNotification") {
+          let finalObj;
+          newUserObj = JSON.parse(data);
+          newUserObj.type = "incomingNotification";
+          newUserObj.id = uuidv4();
+          finalObj = newUserObj;
+          console.log(newUserObj);
+          client.send(JSON.stringify(finalObj));
+        //sends message to client
+        } else if (dataObj.type === "postMessage") {
+          let finalObj;
+          addTextObj = JSON.parse(data);
+          addTextObj.type = "incomingMessage";
+          addTextObj.id = uuidv4();
+          finalObj = addTextObj;
+          console.log(addTextObj);
+          client.send(JSON.stringify(finalObj));
+        }
       }
     });
   });
@@ -71,9 +67,8 @@ wss.on('connection', (ws) => {
     // Broadcast to all.
      wss.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
-        //console.log(clientNum);
+        //sends updater user count to client
         let userNumObj = {};
-        //userNumObj.id = uuidv4();
         userNumObj.numOfClients = clientNum;
         client.send(JSON.stringify(userNumObj));
       }
