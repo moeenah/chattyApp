@@ -20,6 +20,7 @@ class ChatBar extends Component {
         messageObj.content = this.content.value;
         this.props.addMessage(messageObj);
       }
+      this.content.value = "";
     }
   }
 

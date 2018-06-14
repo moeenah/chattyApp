@@ -8,6 +8,10 @@ class MessageList extends Component {
      const Messages = this.props.messages.map(message => (
       <Message key={message.id} username={message.username} content={message.content} />
     ));
+    {/*const Messages = (this.props.messages.length !== undefined) && (this.props.messages.map(message => (
+      <Message key={message.id} username={message.username} content={message.content} />
+    )) );*/}
+
     return (
       <main className="messages">
         {Messages}

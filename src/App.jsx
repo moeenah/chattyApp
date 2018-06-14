@@ -7,67 +7,53 @@ import MessageList from "./MessageList.jsx";
 class App extends Component {
   constructor(props) {
     super(props);
-    // // this is the *only* time you should assign directly to state:
     this.state = {
                     currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-                    messages: [
-                      {
-                        username: "Bob",
-                        content: "Has anyone seen my marbles?",
-                        id: 1
-                      },
-                      {
-                        username: "Anonymous",
-                        content: "No, I think you lost them. You lost your marbles Bob. You lost them for good.",
-                        id: 2
-                      }
-                    ]
+                    messages: []
                   };
+  }
+
+ //sends message to server
+  sendText(message) {
+    this.chatty_server.send(JSON.stringify(message));
+  }
+
+  componentDidMount() {
+    //connects to websocket server
+    this.chatty_server = new WebSocket("ws://localhost:3001/");
+
+    this.chatty_server.onopen = function (event) {
+      console.log("Connected to SERVER");
+    };
+    //adds message recieved from server (with id) to state
+    var _this = this;
+    this.chatty_server.onmessage = function (event) {
+      const oldMessages = _this.state.messages;
+      let newMessage = JSON.parse(event.data);
+      const addNewMessage = [...oldMessages, newMessage];
+      _this.setState({ messages: addNewMessage});
+    };
   }
 
   //function to generate random key
   randomKeyGen() {
-  let key = "";
-  let random = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let key = "";
+    let random = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-  for (let i = 0; i < 6; i++) {
-    let chosen = random.charAt(Math.floor(Math.random() * random.length));
-    key += chosen;
-  }
-  return key;
-}
-
-  componentDidMount() {
-    console.log("componentDidMount <App />");
-    setTimeout(() => {
-      console.log("Simulating incoming message");
-      // Add a new message to the list of messages in the data store
-      const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-      const messages = this.state.messages.concat(newMessage);
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({messages: messages});
-    }, 3000);
-  }
-
-  //adds message to state
-  addMessage(message) {
-    const oldMessages = this.state.messages;
-    //assign random id
-    message.id = this.randomKeyGen();
-    let newMessage = message;
-    const addNewMessage = [...oldMessages, newMessage];
-    this.setState({ messages: addNewMessage});
+    for (let i = 0; i < 6; i++) {
+      let chosen = random.charAt(Math.floor(Math.random() * random.length));
+      key += chosen;
+    }
+    return key;
   }
 
   render() {
 
-    //sends default user name to ChatBar
     return (
       <div>
         <NavBar />
-        <MessageList messages={this.state.messages} />
-        <ChatBar addMessage={this.addMessage.bind(this)} defaultValue={this.state.currentUser.name} />
+         <MessageList messages={this.state.messages} />
+        <ChatBar addMessage={this.sendText.bind(this)} defaultValue={this.state.currentUser.name} />
       </div>
     );
   }
