@@ -25,20 +25,58 @@ const wss = new WebSocket.Server({ server });
 
 wss.on('connection', (ws) => {
   console.log('Client connected');
+  // console.log(wss.clients);
+  let clientNum = wss.clients.size;
+   // Broadcast to all.
+  wss.clients.forEach(function each(client) {
+    if (client.readyState === WebSocket.OPEN) {
+      //console.log(clientNum);
+      let userNumObj = {};
+      //userNumObj.id = uuidv4();
+      userNumObj.numOfClients = clientNum;
+      client.send(JSON.stringify(userNumObj));
+    }
+  });
 
   ws.on('message', function incoming(data) {
-    //console.log(data);
-    dataObj = JSON.parse(data);
-    dataObj.id = uuidv4();
-    console.log(dataObj);
+    let dataObj = JSON.parse(data);
+    //console.log(dataObj);
+    let finalObj;
+    if (dataObj.type === "postNotification") {
+      newUserObj = JSON.parse(data);
+      newUserObj.type = "incomingNotification";
+      newUserObj.id = uuidv4();
+      finalObj = newUserObj;
+      console.log(newUserObj);
+    } else if (dataObj.type === "postMessage") {
+      addTextObj = JSON.parse(data);
+      addTextObj.type = "incomingMessage";
+      addTextObj.id = uuidv4();
+      finalObj = addTextObj;
+      console.log(addTextObj);
+    }
+
 
     wss.clients.forEach(function each(client) {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(dataObj));
+        client.send(JSON.stringify(finalObj));
       }
     });
   });
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-  ws.on('close', () => console.log('Client disconnected'));
+  ws.on('close', () => {
+    console.log('Client disconnected');
+    let clientNum = wss.clients.size;
+    // Broadcast to all.
+     wss.clients.forEach(function each(client) {
+      if (client.readyState === WebSocket.OPEN) {
+        //console.log(clientNum);
+        let userNumObj = {};
+        //userNumObj.id = uuidv4();
+        userNumObj.numOfClients = clientNum;
+        client.send(JSON.stringify(userNumObj));
+      }
+    });
+  });
 });
