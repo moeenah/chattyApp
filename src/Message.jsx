@@ -4,8 +4,9 @@ class Message extends Component {
   render() {
     const colour = {color: this.props.colour};
     let content = this.props.content
+    //gets last three characters of string to check for image or gif
     let lastThree = content.substr(content.length - 3);
-
+    //splits message and img source
     let index = content.lastIndexOf(" ");
     let message = content.substr(0, index);
     let img_src = content.substr(index + 1);
