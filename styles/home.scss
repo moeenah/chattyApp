@@ -39,7 +39,6 @@
     }
 
     .message {
-      display: flex;
       padding: 5px;
     }
 
@@ -96,4 +95,14 @@
       padding-top: 20px;
       padding-right: 10px;
       text-decoration: none;
+    }
+
+    .picture {
+      display: block;
+      margin-left: 130px;
+    }
+
+    .message-picture {
+      display: block;
+      max-width: 60%;
     }
