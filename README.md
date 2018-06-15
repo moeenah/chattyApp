@@ -10,8 +10,6 @@ Sending a message between users
 !["Gif of message being transfered"](https://github.com/moeenah/chattyApp/blob/master/docs/message_users.gif)
 Sending a picture between users
 !["Gif of picture being transfered"](https://github.com/moeenah/chattyApp/blob/master/docs/picture_users.gif)
-User changing screen name
-!["Gif of user changing screen name"](https://github.com/moeenah/chattyApp/blob/master/docs/change_name.gif)
 
 
 ## Getting Started
